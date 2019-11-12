@@ -14,7 +14,7 @@ public class TeXFrame extends JFrame{
 	public TeXFrame(String title, MathObject mo) {
 		setTitle(title);
 		setSize(500, 400);
-		setContentPane(pane = new TeXPane(mo, 500, 400));
+		setContentPane(pane = new TeXPane(mo, 500, 400, this));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		TeXer.instance.addFrame(this);
 		this.addWindowListener(new WindowAdapter() {

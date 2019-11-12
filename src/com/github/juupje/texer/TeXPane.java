@@ -4,7 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -27,8 +31,9 @@ public class TeXPane extends JPanel {
 	private JPanel canvasPanel;
 	private JSlider slider;
 	private MathObject mo;
+	private int xOffset = 0, yOffset = 0;
 	
-	public TeXPane(MathObject mo, int width, int height) {
+	public TeXPane(MathObject mo, int width, int height, TeXFrame frame) {
 		this.mo = mo;
 		createIcon();
 		setSize(width, height);
@@ -38,8 +43,8 @@ public class TeXPane extends JPanel {
 			@Override
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				float offsetX = (canvasPanel.getWidth()/scale-box.getWidth())/2;
-				float offsetY = (canvasPanel.getHeight()/scale + box.getHeight()/2f)/2;
+				float offsetX = (canvasPanel.getWidth()/scale-box.getWidth())/2-xOffset/scale;
+				float offsetY = (canvasPanel.getHeight()/scale + box.getHeight()/2f)/2-yOffset/scale;
 				g2d = (Graphics2D) g;
 				 RenderingHints rh = new RenderingHints(
 			             RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -63,6 +68,36 @@ public class TeXPane extends JPanel {
 				}
 			}
 		});
+		final Point last = new Point(-1,-1);
+		MouseAdapter ma = new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				last.setLocation(e.getPoint());
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				last.setLocation(-1,-1);
+			}
+			
+		};
+		addMouseListener(ma);
+		frame.addMouseListener(ma);
+		
+		MouseMotionListener mml = new MouseMotionListener() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if(last.getX()<0) return;
+				xOffset -= (e.getX() - last.getX());
+				yOffset -= (e.getY() - last.getY());
+				last.setLocation(e.getPoint());
+				repaint();
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {}
+		};
+		addMouseMotionListener(mml);
+		frame.addMouseMotionListener(mml);
 	}	
 	
 	public void createIcon() {

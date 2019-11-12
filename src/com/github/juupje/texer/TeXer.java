@@ -15,7 +15,7 @@ import javafx.scene.text.Font;
 
 public class TeXer implements Plugin {
 
-	boolean initialized = false;
+	static boolean initialized = false;
 	private ArrayList<TeXFrame> openFrames;
 	public static TeXer instance;
 	
@@ -26,6 +26,7 @@ public class TeXer implements Plugin {
 
 	@Override
 	public void run() {
+		openFrames = new ArrayList<>();
 		Command.insertCommand("disp", new Command() {
 			@Override
 			public void process(String arg) {
@@ -36,6 +37,11 @@ public class TeXer implements Plugin {
 			}
 		});
 	}
+	
+	@Override
+	public int version() {
+		return 1;
+	}
 
 	@Override
 	public void exit() {
@@ -45,7 +51,6 @@ public class TeXer implements Plugin {
 	
 	private void initialize() {
 		instance = this;
-		openFrames = new ArrayList<>();
 		Font.loadFont(TeXer.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/base/jlm_cmmi10.ttf"), 1);
 		Font.loadFont(TeXer.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/maths/jlm_cmsy10.ttf"), 1);
         Font.loadFont(TeXer.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/latin/jlm_cmr10.ttf"), 1);
