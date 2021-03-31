@@ -1,0 +1,11 @@
+{
+	"commands": {
+		"disp": {
+			"syntax": "disp(a)",
+			"plugin": "TeXer",
+			"description": "Exports and compiles the given variable in LaTeX format, and displays it in a new window.",
+			"arguments": "a: the name of a variable.",
+			"result": "A new window with the value of the variable shown in LaTeX."
+		}
+	}
+}

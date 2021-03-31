@@ -1,17 +1,19 @@
 package com.github.juupje.texer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+
+import com.github.juupje.calculator.commands.Commands;
 import com.github.juupje.calculator.helpers.ErrorHandler;
-import com.github.juupje.calculator.helpers.IOHandler;
-import com.github.juupje.calculator.helpers.SettingsHandler;
+import com.github.juupje.calculator.helpers.io.IOHandler;
+import com.github.juupje.calculator.helpers.io.JSONReader;
 import com.github.juupje.calculator.main.Calculator;
-import com.github.juupje.calculator.main.Command;
 import com.github.juupje.calculator.main.Variables;
 import com.github.juupje.calculator.main.plugins.Plugin;
 import com.github.juupje.calculator.mathobjects.MathObject;
-
-import javafx.scene.text.Font;
+import com.github.juupje.calculator.settings.SettingsHandler;
 
 public class TeXer implements Plugin {
 
@@ -27,20 +29,27 @@ public class TeXer implements Plugin {
 	@Override
 	public void run() {
 		openFrames = new ArrayList<>();
-		Command.insertCommand("disp", new Command() {
-			@Override
-			public void process(String arg) {
+		Commands.insertCommand("disp", arg -> {
 				if(Variables.exists(arg))
 					display(Variables.get(arg));
 				else
 					throw new IllegalArgumentException("Variable " + arg + " not found.");
-			}
-		});
+			});
+	}
+	
+	@Override
+	public JSONObject initHelp() {
+		try {
+			return JSONReader.parse(TeXer.class.getResourceAsStream("/com/github/juupje/texer/files/help.json"));
+		} catch (IOException e) {
+			Calculator.errorHandler.handle("Couldn't load help file of TeXer.", e);
+		}
+		return null;
 	}
 	
 	@Override
 	public int version() {
-		return 1;
+		return 4;
 	}
 
 	@Override
@@ -51,11 +60,11 @@ public class TeXer implements Plugin {
 	
 	private void initialize() {
 		instance = this;
-		Font.loadFont(TeXer.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/base/jlm_cmmi10.ttf"), 1);
+		/*Font.loadFont(TeXer.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/base/jlm_cmmi10.ttf"), 1);
 		Font.loadFont(TeXer.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/maths/jlm_cmsy10.ttf"), 1);
         Font.loadFont(TeXer.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/latin/jlm_cmr10.ttf"), 1);
         Font.loadFont(TeXer.class.getResourceAsStream("/org/scilab/forge/jlatexmath/fonts/base/jlm_cmex10.ttf"), 1);
-        initialized = true;
+        */initialized = true;
 	}
 	
 	public void display(MathObject mo) {
@@ -77,8 +86,9 @@ public class TeXer implements Plugin {
 		Calculator.setIOHandler(new IOHandler());
 		Calculator.setErrorHandler(new ErrorHandler());
 		Calculator.setSettingsHandler(new SettingsHandler());
+		Calculator.parseArgs(args);
 		new TeXer().run();
-		Calculator.start(args);
+		Calculator.start();
 		new Calculator();
 	}
 }
