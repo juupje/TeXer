@@ -17,6 +17,8 @@ import com.github.juupje.calculator.settings.SettingsHandler;
 
 public class TeXer implements Plugin {
 
+	private static final int VERSION_ID = 5;
+	
 	static boolean initialized = false;
 	private ArrayList<TeXFrame> openFrames;
 	public static TeXer instance;
@@ -49,7 +51,7 @@ public class TeXer implements Plugin {
 	
 	@Override
 	public int version() {
-		return 4;
+		return VERSION_ID;
 	}
 
 	@Override

@@ -20,11 +20,12 @@ import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 
-import com.github.juupje.calculator.helpers.Printer;
 import com.github.juupje.calculator.mathobjects.MathObject;
+import com.github.juupje.calculator.printer.LaTeXPrinter;
 
 public class TeXPane extends JPanel {
 	private static final long serialVersionUID = 8359735885061129030L;
+	
 	private Graphics2D g2d;
 	private float scale = 40;
 	private Box box;
@@ -101,7 +102,7 @@ public class TeXPane extends JPanel {
 	}	
 	
 	public void createIcon() {
-		TeXIcon icon = new TeXFormula(Printer.toLatex(mo)).createTeXIcon(TeXConstants.STYLE_DISPLAY, 50);
+		TeXIcon icon = new TeXFormula(LaTeXPrinter.toLatex(mo)).createTeXIcon(TeXConstants.STYLE_DISPLAY, 50);
 		icon.setInsets(new Insets(5,5,5,5));
 		box = icon.getBox();
 	}
